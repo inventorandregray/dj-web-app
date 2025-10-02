@@ -21,41 +21,28 @@ This demo shows how modern browsers can perform low-latency, real-time audio mix
    ```bash
    python -m http.server
 
-
 Then visit: http://localhost:8000/index.html
 
- Controls
+## Controls
 
-Use file selectors to load your own audio tracks
+- Use file selectors to load your own audio tracks
+- Play / Pause / Cue
+- Pitch slider (0.5x – 2.0x)
+- Crossfader to blend between decks
+- Master gain control
+- BPM sync and auto-loop (4 beats)
 
-Play / Pause / Cue
+## Technologies Used
 
-Pitch slider (0.5x – 2.0x)
+- HTML5 → UI and structure
+- CSS3 → Responsive layout & styling
+- JavaScript (ES6) → Web Audio API for:
+  - Loading/decoding audio
+  - Pitch & BPM detection
+  - Mixing via gain nodes
+  - Vinyl/canvas rendering
+  - Crossfader + scratch logic
 
-Crossfader to blend between decks
+## License
 
-Master gain control
-
-BPM sync and auto-loop (4 beats)
-
- Technologies Used
-
-HTML5 → UI and structure
-
-CSS3 → Responsive layout & styling
-
-JavaScript (ES6) → Web Audio API for:
-
-Loading/decoding audio
-
-Pitch & BPM detection
-
-Mixing via gain nodes
-
-Vinyl/canvas rendering
-
-Crossfader + scratch logic
-
- License
-
-This project is licensed under the MIT License
+This project is licensed under the MIT License.
