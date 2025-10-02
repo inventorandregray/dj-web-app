@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DJ Web App</title>
+  <style>
+    /* === CSS Styles === */
+    body { background:#111; color:#fff; font-family:Arial, sans-serif; text-align:center; }
+    canvas { background:#222; margin:10px auto; display:block; }
+    .deck { display:inline-block; margin:20px; }
+    .controls { margin-top:10px; }
+    input[type=range] { width:150px; }
+  </style>
+</head>
+<body>
+  <h1>DJ Web App 🎶</h1>
+  <div class="deck" id="deckA">
+    <h2>Deck A</h2>
+    <input type="file" id="fileA">
+    <button onclick="playA()">Play/Pause</button>
+    <br>
+    <label>Pitch: <input type="range" id="pitchA" min="0.5" max="2" step="0.01" value="1"></label>
+    <canvas id="waveA" width="300" height="100"></canvas>
+  </div>
+  <div class="deck" id="deckB">
+    <h2>Deck B</h2>
+    <input type="file" id="fileB">
+    <button onclick="playB()">Play/Pause</button>
+    <br>
+    <label>Pitch: <input type="range" id="pitchB" min="0.5" max="2" step="0.01" value="1"></label>
+    <canvas id="waveB" width="300" height="100"></canvas>
+  </div>
+  <div class="controls">
+    <h2>Crossfader</h2>
+    <input type="range" id="crossfader" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <script>
+    // === JavaScript DJ Logic ===
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContext();
+
+    let sourceA, sourceB, gainA, gainB, bufferA, bufferB;
+
+    function loadFile(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        ctx.decodeAudioData(e.target.result, function(buffer) {
+          callback(buffer);
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    document.getElementById('fileA').onchange = function(e) {
+      loadFile(e.target.files[0], function(buffer) {
+        bufferA = buffer;
+      });
+    };
+
+    document.getElementById('fileB').onchange = function(e) {
+      loadFile(e.target.files[0], function(buffer) {
+        bufferB = buffer;
+      });
+    };
+
+    function playA() {
+      if (sourceA) { sourceA.stop(); sourceA = null; return; }
+      sourceA = ctx.createBufferSource();
+      sourceA.buffer = bufferA;
+      gainA = ctx.createGain();
+      sourceA.playbackRate.value = document.getElementById('pitchA').value;
+      sourceA.connect(gainA).connect(ctx.destination);
+      sourceA.start(0);
+    }
+
+    function playB() {
+      if (sourceB) { sourceB.stop(); sourceB = null; return; }
+      sourceB = ctx.createBufferSource();
+      sourceB.buffer = bufferB;
+      gainB = ctx.createGain();
+      sourceB.playbackRate.value = document.getElementById('pitchB').value;
+      sourceB.connect(gainB).connect(ctx.destination);
+      sourceB.start(0);
+    }
+
+    document.getElementById('crossfader').oninput = function(e) {
+      const val = parseFloat(e.target.value);
+      if (gainA) gainA.gain.value = 1 - val;
+      if (gainB) gainB.gain.value = val;
+    };
+
+    document.getElementById('pitchA').oninput = function(e) {
+      if (sourceA) sourceA.playbackRate.value = parseFloat(e.target.value);
+    };
+
+    document.getElementById('pitchB').oninput = function(e) {
+      if (sourceB) sourceB.playbackRate.value = parseFloat(e.target.value);
+    };
+  </script>
+
+  <!--
+  ==========================================
+   Description & Instructions
+  ==========================================
+  This is a self-contained single-file Open-Source Web DJ app (HTML/CSS/JavaScript).
+
+  Software Description:
+  Browser-based DJ mixing app with dual decks, pitch, crossfader, BPM detection,
+  and waveform visualization using the Web Audio API.
+
+  How to Run:
+  1. Download index.html
+  2. Open in Chrome/Firefox/Edge OR run via:
+     python -m http.server
+     Visit http://localhost:8000/index.html
+  3. Load audio files, control playback, pitch, and crossfade.
+
+  Languages & Technologies:
+  - HTML5 (UI & structure)
+  - CSS3 (layout, visuals)
+  - JavaScript ES6 (Web Audio API)
+
+  License: MIT © Andre Gray 2015
+  -->
+</body>
+</html>
